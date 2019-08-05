@@ -3,3 +3,6 @@ cthulhu: src/main.c
 
 clean:
 	rm cthulhu
+
+run: cthulhu
+	./cthulhu
