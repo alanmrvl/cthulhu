@@ -7,6 +7,22 @@
 #define SUB_EXPR_COUNT 4
 
 int
+parse_num(char *verb, regmatch_t *match)
+{
+	char buffer[4] = {0};
+
+	int substr_start = (int)match->rm_so;
+	int substr_end = (int)match->rm_eo;
+	size_t substr_length = sizeof(char) * (substr_end - substr_start);
+
+	strncpy(buffer, &verb[substr_start], substr_length);
+
+	int parsed = strtol(buffer, NULL, 10);
+
+	return (parsed);
+}
+
+int
 main(int argc, char** argv)
 {
 	srand(time(NULL));
@@ -36,30 +52,12 @@ main(int argc, char** argv)
 		exit(1);
 	}
 
-	//printf("Successful match\n");
-
-	char roll_count_buf[4] = {0};
-	int roll_count_start = (int)matches[1].rm_so;
-	int roll_count_end = (int)matches[1].rm_eo;
-	size_t roll_count_length = sizeof(char) * (roll_count_end - roll_count_start);
-	strncpy(roll_count_buf, &verb[roll_count_start], roll_count_length);
-
-	//printf("roll_count: %s\n", roll_count_buf);
-	
-	char die_buf[4] = {0};
-	int die_start = (int)matches[3].rm_so;
-	int die_end = (int)matches[3].rm_eo;
-	size_t die_length = sizeof(char) * (die_end - die_start);
-	strncpy(die_buf, &verb[die_start], die_length);
-
-	//printf("die: %s\n", die_buf);
-
-	int roll_count = strtol(roll_count_buf, NULL, 10);
-	int die = strtol(die_buf, NULL, 10);
+	int roll_count = parse_num(verb, &matches[1]);
+	int die = parse_num(verb, &matches[3]);
 
 	int roll_total = 0;
 	for (int i = 0; i < roll_count; i++) {
-		int current_roll = rand() % die;
+		int current_roll = rand() % die + 1;
 		roll_total += current_roll;
 	}
 	
