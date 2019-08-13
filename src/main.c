@@ -7,7 +7,7 @@
 #define SUB_EXPR_COUNT 4
 
 int
-parse_num(char *verb, regmatch_t *match)
+parse_num(const char *const restrict verb, const regmatch_t *const restrict match)
 {
 	char buffer[4] = {0};
 
@@ -15,7 +15,7 @@ parse_num(char *verb, regmatch_t *match)
 	int substr_end = (int)match->rm_eo;
 	size_t substr_length = sizeof(char) * (substr_end - substr_start);
 
-	strncpy(buffer, &verb[substr_start], substr_length);
+	strncpy(buffer, verb + substr_start, substr_length);
 
 	int parsed = strtol(buffer, NULL, 10);
 
@@ -23,17 +23,17 @@ parse_num(char *verb, regmatch_t *match)
 }
 
 int
-main(int argc, char** argv)
+main(int argc, char **argv)
 {
 	srand(time(NULL));
 
-	char* roll_format = "(^[[:digit:]]{1,3})(d|D)([[:digit:]]{1,3}$)";
+	const char roll_format[] = "(^[[:digit:]]{1,3})(d|D)([[:digit:]]{1,3}$)";
 
 	if (argc != 2) {
 		fprintf(stderr, "Must pass exactly one argument.\n");
 	}
 
-	char* verb = argv[1];
+	char *verb = argv[1];
 
 	regex_t regex;
 	int comp_status = regcomp(&regex, roll_format, REG_EXTENDED);
